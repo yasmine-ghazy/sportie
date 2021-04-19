@@ -13,8 +13,9 @@ class FavoriteLocalDataSource: FavoriteDataSource {
 
     //MARK: - Properties
     static let shared: FavoriteDataSource = FavoriteLocalDataSource()
-    private var entityName = "FavouriteLeagues"
+    private var entityName = "FavouriteLeague"
     private var entity: NSEntityDescription?
+    private var leagues = [NSManagedObject]
     
     //MARK: - Initalizer
     private init() {
@@ -27,6 +28,13 @@ class FavoriteLocalDataSource: FavoriteDataSource {
     //MARK: - MovieDataSource
     
     func addFavourite(league: League) -> Bool {
+        let leagueModel = NSManagedObject(entity: entity!, insertInto: CoreDataDatabase.shared.getContext())
+        
+        leagueModel.setValue(league.idLeague, forKey: "idLeague")
+        leagueModel.setValue(league.strLeague, forKey: "strLeague")
+        
+        CoreDataDatabase.shared.saveContext()
+        
         return true
     }
     
@@ -35,11 +43,22 @@ class FavoriteLocalDataSource: FavoriteDataSource {
     }
     
     func getFavouriteLeagues() -> [League] {
-        let itemsList = Array(repeating: League(idLeague: "4346",
-                                               strLeague: "American Major League Soccer",
-                                               strBadge: "https://www.thesportsdb.com/images/media/league/badge/dqo6r91549878326.png",
-                                               strYoutube: "www.youtube.com/user/mls"), count: 10)
-        return itemsList
+//        let itemsList = Array(repeating: League(idLeague: "4346",
+//                                               strLeague: "American Major League Soccer",
+//                                               strBadge: "https://www.thesportsdb.com/images/media/league/badge/dqo6r91549878326.png",
+//                                               strYoutube: "www.youtube.com/user/mls"), count: 10)
+        
+        let leagueFetch = NSFetchRequest<NSManagedObject>(entityName: "FavouriteLeague")
+        
+        do{
+            if let leagues =  try CoreDataDatabase.shared.getContext()?.fetch(leagueFetch){
+//                return leagues
+            }
+                }catch(let error){
+                    print(error)
+                }
+        
+        return nil
     }
     
     func deleteAllLeagues() -> Bool {
