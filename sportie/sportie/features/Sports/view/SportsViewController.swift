@@ -9,13 +9,14 @@
 import UIKit
 
 
-class SportsVC: BaseVC {
+class SportsViewController: BaseVC {
     
     //MARK: - IBOutlets
     @IBOutlet var collectionView: UICollectionView!
-    
+    private var presenter: SportsPresenter!
+
     //MARK: - Properties
-       var itemsList: Array<Movie> = Array(){
+       var itemsList: Array<Sport> = Array(){
            didSet{
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -34,20 +35,38 @@ class SportsVC: BaseVC {
 }
 
 //MARK: - Methods
-extension SportsVC{
+extension SportsViewController{
     func setupViews(){
-        itemsList = Array(arrayLiteral:
-            Movie(title: "Dawn of the Planet of the Apes", image: "https://api.androidhive.info/json/movies/1.jpg", releaseYear: 2014, rating: 8.3, genre: "Drama"),
-                          Movie(title: "District 9", image: "https://api.androidhive.info/json/movies/2.jpg", releaseYear: 2009, rating: 8.0, genre: "Drama"),
-                          Movie(title: "Transformers: Age of Extinction", image: "https://api.androidhive.info/json/movies/3.jpg", releaseYear: 2014, rating:  6.3, genre: "Action"),
-                          Movie(title: "X-Men: Days of Future Past", image: "https://api.androidhive.info/json/movies/4.jpg", releaseYear: 2014, rating: 8.4, genre:  "Action"),
-                          Movie(title: "Tangled", image: "https://api.androidhive.info/json/movies/8.jpg", releaseYear: 2014, rating: 8.3, genre: "Drama")
-        )
+        let dataSource = SportRemoteDataSource()
+        let repo = SportRepo(sportDataSource: dataSource)
+        presenter = SportsPresenter(repo: repo)
+        presenter.attachView(view: self)
+        presenter.getSports()
+        
+            dataSource.getLeagues(sportTitle: "Soccer"){ (res) in
+                print(res.data?.countrys!)
+            }
+            
+            dataSource.getTeams(leagueId: "4328"){ (res) in
+                print(res.data?.teams!)
+            }
+            
+        //id=4328&r=33&s=2020-2021
+        dataSource.getLatestResults(leagueId: "4328"){ (res) in
+                print(res.data?.results)
+            }
+            
+        dataSource.getUpcomingEvents(leagueId: "4328"){ (res) in
+                print(res.data?.events!)
+            }
+        
+        
+        
     }
 }
 
 // MARK: UICollectionViewDataSource, UICollectionViewDelegate
-extension SportsVC: UICollectionViewDelegate, UICollectionViewDataSource{
+extension SportsViewController: UICollectionViewDelegate, UICollectionViewDataSource{
     
      func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -59,7 +78,7 @@ extension SportsVC: UICollectionViewDelegate, UICollectionViewDataSource{
 
 
      func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SportCVC.reuseIdentifier, for: indexPath) as! SportCVC
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SportCollectionViewCell.reuseIdentifier, for: indexPath) as! SportCollectionViewCell
         // Configure the cell
         cell.configureData(item: itemsList[indexPath.row])
         return cell
@@ -75,7 +94,7 @@ extension SportsVC: UICollectionViewDelegate, UICollectionViewDataSource{
 }
   
 //MARK: - UICollectionViewDelegateFlowLayout
-extension SportsVC: UICollectionViewDelegateFlowLayout{
+extension SportsViewController: UICollectionViewDelegateFlowLayout{
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = UIScreen.main.bounds.width / 2
@@ -89,4 +108,23 @@ extension SportsVC: UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
+}
+
+
+//MARK: - SportsView
+extension SportsViewController: SportsView{
+    func getSportsSuccess(items: [Sport]) {
+        self.itemsList = items
+        collectionView.reloadData()
+    }
+    
+    func getSportsFailed(message: String) {
+        UIHelper.shared.showAlert(at: self, message: message)
+    }
+    
+    func noInternet() {
+        UIHelper.shared.showAlert(at: self, message: "No Internet")
+    }
+    
+    
 }

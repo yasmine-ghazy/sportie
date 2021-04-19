@@ -9,20 +9,20 @@
 import UIKit
 import Kingfisher
 
-class SportCVC: UICollectionViewCell {
+class SportCollectionViewCell: UICollectionViewCell {
     
     //MARK: - IBOutlets
     @IBOutlet weak var sportIV: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     
     //MARK: - Properties
-    static let reuseIdentifier = "SportCVC"
+    static let reuseIdentifier = "SportCollectionViewCell"
     
     //MARK: - IBAction
     
     //MARK: - Methods
-    func configureData(item: Movie){
-        titleLabel?.text = item.title
-        sportIV.kf.setImage(with: URL(string:item.image))
+    func configureData(item: Sport){
+        titleLabel?.text = item.strSport
+        sportIV.kf.setImage(with: URL(string:item.strSportThumb))
     }
 }

@@ -9,7 +9,15 @@ import Foundation
 
 import Foundation
 
-struct Event{
+struct Events: Codable{
+    var events : [Event]!
+}
+
+struct Results: Codable{
+    var results : [Event]!
+}
+
+struct Event: Codable{
     //Properties
     var idEvent : String!
     

@@ -34,10 +34,29 @@ class FavouriteLeaguesViewContoller: BaseVC {
 //MARK: - Methods
 extension FavouriteLeaguesViewContoller{
     func setupViews(){
-        let repo = LeagueRepo(sportDataSource: SportRemoteDataSource.shared, favoriteDataSource: FavoriteLocalDataSource.shared)
+        let dataSource = SportRemoteDataSource()
+        let repo = LeagueRepo(sportDataSource: dataSource, favoriteDataSource: FavoriteLocalDataSource.shared)
         presenter = FavouriteLeaguesPresenter(repo: repo)
         presenter.attachView(view: self)
         presenter.getFavouriteLeagues()
+        
+
+        
+//        dataSource.getSports { (res) in
+//            print(res.data!.sports!)
+//        }
+//
+//        dataSource.getSports { (res) in
+//            print(res.data!.sports!)
+//        }
+//
+//        dataSource.getSports { (res) in
+//            print(res.data!.sports!)
+//        }
+//
+//        dataSource.getSports { (res) in
+//            print(res.data!.sports!)
+//        }
     }
 }
 

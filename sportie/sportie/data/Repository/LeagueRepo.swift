@@ -9,7 +9,7 @@
 import Foundation
 
 protocol LeagueRepoProtocol{
-    func getLeagues(sportTitle: String, completion: @escaping ((Response) -> ()))
+    func getLeagues(sportTitle: String, completion: @escaping ((Response<Leagues>) -> ()))
     func addFavourite(league: League) -> Bool
     func deleteFavourite(leagueId: String) -> Bool
     func getFavouriteLeagues() -> [League]
@@ -29,7 +29,7 @@ class LeagueRepo: LeagueRepoProtocol {
     }
     
     //MARK: - LeagueRepoProtocol
-    func getLeagues(sportTitle: String, completion: @escaping ((Response) -> ())){
+    func getLeagues(sportTitle: String, completion: @escaping ResponseHandler<Leagues>){
         sportDataSource.getLeagues(sportTitle: sportTitle, completion: completion)
     }
     

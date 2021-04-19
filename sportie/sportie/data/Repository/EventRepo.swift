@@ -8,9 +8,9 @@
 import Foundation
 
 protocol EventRepoProtocol{
-    func getTeams(leagueId: String, completion: @escaping ((Response) -> ()))
-    func getLatestResults(teamId: String, completion: @escaping ((Response) -> ()))
-    func getUpcomingEvents(teamId: String, completion: @escaping ((Response) -> ()))
+    func getTeams(leagueId: String, completion: @escaping ResponseHandler<Teams>)
+    func getLatestResults(leagueId: String, completion: @escaping ResponseHandler<Results>)
+    func getUpcomingEvents(leagueId: String, completion: @escaping ResponseHandler<Events>)
 }
 
 class EventRepo: EventRepoProtocol {
@@ -21,16 +21,16 @@ class EventRepo: EventRepoProtocol {
         self.sportDataSource = sportDataSource
     }
     
-    func getTeams(leagueId: String, completion: @escaping ((Response) -> ())){
+    func getTeams(leagueId: String, completion: @escaping ResponseHandler<Teams>){
         sportDataSource.getTeams(leagueId: leagueId, completion: completion)
     }
     
-    func getLatestResults(teamId: String, completion: @escaping ((Response) -> ())){
-        sportDataSource.getLatestResults(teamId: teamId, completion: completion)
+    func getLatestResults(leagueId teamId: String, completion: @escaping ResponseHandler<Results>){
+        sportDataSource.getLatestResults(leagueId: teamId, completion: completion)
     }
     
-    func getUpcomingEvents(teamId: String, completion: @escaping ((Response) -> ())){
-        sportDataSource.getUpcomingEvents(teamId: teamId, completion: completion)
+    func getUpcomingEvents(leagueId teamId: String, completion: @escaping ResponseHandler<Events>){
+        sportDataSource.getUpcomingEvents(leagueId: teamId, completion: completion)
     }
     
 }
