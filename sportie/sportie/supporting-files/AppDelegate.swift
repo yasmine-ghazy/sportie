@@ -12,12 +12,11 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         
-        UITabBar.appearance().barTintColor = #colorLiteral(red: 0.8170323968, green: 0.1220784113, blue: 0, alpha: 1)
+        UITabBar.appearance().barTintColor = UIColor(named: "AccentColor")
         
         return true
     }

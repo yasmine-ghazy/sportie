@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol TeamRepoProtocol{
-    func getTeams(leagueId: String, completion: @escaping ((Response) -> ()))
+    func getTeams(leagueId: String, completion: @escaping ResponseHandler<Teams>)
 }
 
 class TeamRepo: TeamRepoProtocol {
@@ -20,7 +20,7 @@ class TeamRepo: TeamRepoProtocol {
         self.sportDataSource = sportDataSource
     }
     
-    func getTeams(leagueId: String, completion: @escaping ((Response) -> ())){
+    func getTeams(leagueId: String, completion: @escaping ResponseHandler<Teams>){
         sportDataSource.getTeams(leagueId: leagueId, completion: completion)
     }
     

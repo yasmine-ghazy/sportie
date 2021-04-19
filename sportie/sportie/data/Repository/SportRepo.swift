@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol SportRepoProtocol{
-    func getSports(completion: @escaping ((Response) -> ()))
+    func getSports(completion: @escaping ResponseHandler<Sports>)
 }
 
 class SportRepo: SportRepoProtocol {
@@ -20,7 +20,7 @@ class SportRepo: SportRepoProtocol {
         self.sportDataSource = sportDataSource
     }
     
-    func getSports(completion: @escaping ((Response) -> ())){
+    func getSports(completion: @escaping ResponseHandler<Sports>){
         sportDataSource.getSports(completion: completion)
     }
     
