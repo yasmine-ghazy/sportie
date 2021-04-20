@@ -24,11 +24,13 @@ class CoreDataDatabase{
         return managedContext
     }
     
-    func saveContext(){
+    func saveContext()->Bool{
         do{
             try managedContext?.save()
+            return true
         }catch(let error){
             print(error)
+            return false
         }
         
     }

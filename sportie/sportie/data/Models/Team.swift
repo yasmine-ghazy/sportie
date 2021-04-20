@@ -8,7 +8,11 @@
 import Foundation
 import Foundation
 
-struct Team{
+struct Teams: Codable{
+    var teams : [Team]!
+}
+
+struct Team: Codable{
     
     var idTeam : String!
     

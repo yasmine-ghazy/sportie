@@ -11,44 +11,31 @@ import Foundation
 class SportRemoteDataSource: SportDataSource {
     
     //MARK: - Properties
-    static let shared: SportDataSource = SportRemoteDataSource()
-    
-    let baseUrl = "https://www.thesportsdb.com/api/v1/json/1/"
-    
-    private init(){
-        
-    }
-    
-    func getSports(completion: @escaping ((Response) -> ())) {
+    private let baseUrl = "https://www.thesportsdb.com/api/v1/json/1/"
+
+    func getSports(completion: @escaping ResponseHandler<Sports>) {
         let url = baseUrl + "all_sports.php"
-        completion(Response())
+        RequestHandler.shared.get(url: url, completion: completion)
     }
     
-    func getLeagues(sportTitle: String,completion: @escaping ((Response) -> ())) {
-        let url = baseUrl + "all_leagues.php?s=\(sportTitle)"
-        
-        completion(Response())
+    func getLeagues(sportTitle: String,completion: @escaping ResponseHandler<Leagues>) {
+        let url = baseUrl + "search_all_leagues.php?s=Soccer"
+        RequestHandler.shared.get(url: url, completion: completion)
     }
     
-    func getTeams(leagueId: String, completion: @escaping ((Response) -> ())){
+    func getTeams(leagueId: String, completion: @escaping ResponseHandler<Teams>){
         let url = baseUrl + "lookup_all_teams.php?id=\(leagueId)"
-        
-        completion(Response())
+        RequestHandler.shared.get(url: url, completion: completion)
     }
     
-    func getLeagueDetails(leagueId: String, completion: @escaping ((Response) -> ())) {
-        let url = baseUrl + "lookupleague.php?id=\(leagueId)"
-        completion(Response())
+    func getLatestResults(leagueId: String, completion: @escaping ResponseHandler<Results>){
+        let url = baseUrl + "eventslast.php?id=\(leagueId)"
+        RequestHandler.shared.get(url: url, completion: completion)
     }
     
-    func getLatestResults(teamId: String, completion: @escaping ((Response) -> ())){
-        let url = baseUrl + "eventslast.php?id=\(teamId)"
-        completion(Response())
-    }
-    
-    func getUpcomingEvents(teamId: String, completion: @escaping ((Response) -> ())){
-        let url = baseUrl + "eventsround.php?id=\(teamId)&r=33&s=2020-2021"
-        completion(Response())
+    func getUpcomingEvents(leagueId: String, completion: @escaping ResponseHandler<Events>){
+        let url = baseUrl + "eventsround.php?id=\(leagueId)&r=33&s=2020-2021"
+        RequestHandler.shared.get(url: url, completion: completion)
     }
 
 }

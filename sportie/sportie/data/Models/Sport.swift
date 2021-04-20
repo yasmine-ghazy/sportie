@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct Sport{
+struct Sports: Codable{
+    var sports : [Sport]!
+}
+
+struct Sport: Codable{
     var strSport : String!
     var strSportThumb : String!
 }

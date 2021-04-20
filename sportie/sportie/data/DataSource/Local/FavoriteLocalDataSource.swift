@@ -15,7 +15,6 @@ class FavoriteLocalDataSource: FavoriteDataSource {
     static let shared: FavoriteDataSource = FavoriteLocalDataSource()
     private var entityName = "FavouriteLeague"
     private var entity: NSEntityDescription?
-    private var leagues = [NSManagedObject]
     
     //MARK: - Initalizer
     private init() {
@@ -28,14 +27,13 @@ class FavoriteLocalDataSource: FavoriteDataSource {
     //MARK: - MovieDataSource
     
     func addFavourite(league: League) -> Bool {
-        let leagueModel = NSManagedObject(entity: entity!, insertInto: CoreDataDatabase.shared.getContext())
-        
-        leagueModel.setValue(league.idLeague, forKey: "idLeague")
-        leagueModel.setValue(league.strLeague, forKey: "strLeague")
-        
-        CoreDataDatabase.shared.saveContext()
-        
-        return true
+        if let entity = entity{
+            let _ = league.toManagedObject(entity: entity, insertInto: CoreDataDatabase.shared.getContext())
+            if CoreDataDatabase.shared.saveContext(){
+                return true
+            }
+        }
+        return false
     }
     
     func deleteFavourite(leagueId: String) -> Bool {
@@ -43,22 +41,18 @@ class FavoriteLocalDataSource: FavoriteDataSource {
     }
     
     func getFavouriteLeagues() -> [League] {
-//        let itemsList = Array(repeating: League(idLeague: "4346",
-//                                               strLeague: "American Major League Soccer",
-//                                               strBadge: "https://www.thesportsdb.com/images/media/league/badge/dqo6r91549878326.png",
-//                                               strYoutube: "www.youtube.com/user/mls"), count: 10)
-        
         let leagueFetch = NSFetchRequest<NSManagedObject>(entityName: "FavouriteLeague")
-        
         do{
             if let leagues =  try CoreDataDatabase.shared.getContext()?.fetch(leagueFetch){
-//                return leagues
-            }
-                }catch(let error){
-                    print(error)
+                return leagues.map(){ (managedObject) -> League in
+                    League(fromManagedObject: managedObject)
                 }
+            }
+        }catch(let error){
+            print(error)
+        }
         
-        return nil
+        return []
     }
     
     func deleteAllLeagues() -> Bool {

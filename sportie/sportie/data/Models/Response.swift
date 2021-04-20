@@ -8,16 +8,12 @@
 
 import Foundation
 
-
-
-struct Response{
-    var data: Any?
+struct Response<T: Codable>{
+    var data: T?
     var message: String?
     var status: ResponseStatus?
-    var statusCode: Int?
 }
 
-
 enum ResponseStatus{
-    case Success, Failure
+    case success, failure
 }

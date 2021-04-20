@@ -10,17 +10,15 @@ import Foundation
 
 protocol SportDataSource {
     
-    func getSports(completion: @escaping ((Response) -> ()))
+    func getSports(completion: @escaping ((Response<Sports>) -> ()))
     
-    func getLeagues(sportTitle: String,completion: @escaping ((Response) -> ()))
+    func getLeagues(sportTitle: String,completion: @escaping ((Response<Leagues>) -> ()))
     
-    func getTeams(leagueId: String, completion: @escaping ((Response) -> ()))
+    func getTeams(leagueId: String, completion: @escaping ((Response<Teams>) -> ()))
+        
+    func getLatestResults(leagueId: String, completion: @escaping ((Response<Results>) -> ()))
     
-    func getLeagueDetails(leagueId: String, completion: @escaping ((Response) -> ()))
-    
-    func getLatestResults(teamId: String, completion: @escaping ((Response) -> ()))
-    
-    func getUpcomingEvents(teamId: String, completion: @escaping ((Response) -> ()))
+    func getUpcomingEvents(leagueId: String, completion: @escaping ((Response<Events>) -> ()))
     
 }
 
