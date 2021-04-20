@@ -8,11 +8,21 @@
 import Foundation
 
 protocol FavouriteLeaguesView{
-    func showFavouriteLeagues(items: [League])
-    func favouriteLeagueDeleted()
+    func setFavourites(leagues: [League])
+    func setEmptyFavourites()
+    func favouriteDeleted(leagueId: String)
+    func showError(message: String)
 }
 
-class FavouriteLeaguesPresenter{
+protocol FavouriteLeaguesPresenterProtocol {
+    func attachView(view: FavouriteLeaguesView)
+    func dettachView()
+    func getFavouriteLeagues()
+    func deleteFavourite(leagueId: String)
+    func getIndex(for leagueId: String, in itemsList: [League])-> Int?
+}
+
+class FavouriteLeaguesPresenter: FavouriteLeaguesPresenterProtocol{
     
     var view: FavouriteLeaguesView?
     private let repo: LeagueRepoProtocol?
@@ -30,15 +40,28 @@ class FavouriteLeaguesPresenter{
     }
     
     func getFavouriteLeagues(){
-        if let items = repo?.getFavouriteLeagues(){
-            self.view?.showFavouriteLeagues(items: items)
+        if let items = repo?.getFavouriteLeagues(), !items.isEmpty{
+            self.view?.setFavourites(leagues: items)
+        }else{
+            self.view?.setEmptyFavourites()
         }
     }
     
-    func removeFavouriteLeague(){
-//        if true {
-//            self.view?.favouriteLeagueRemoved()
-//        }
+    func deleteFavourite(leagueId: String) {
+        if let res = repo?.deleteFavourite(leagueId: leagueId), res{
+            self.view?.favouriteDeleted(leagueId: leagueId)
+        }else{
+            self.view?.showError(message: "Sorry, Favourite cannot be deleted.")
+        }
+    }
+    
+    func getIndex(for leagueId: String, in itemsList: [League])-> Int?{
+        for i in 0..<itemsList.count{
+            if(itemsList[i].idLeague == leagueId){
+                return i
+            }
+        }
+        return nil
     }
     
 }

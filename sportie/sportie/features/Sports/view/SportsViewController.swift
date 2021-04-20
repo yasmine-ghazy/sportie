@@ -13,7 +13,7 @@ class SportsViewController: BaseVC {
     
     //MARK: - IBOutlets
     @IBOutlet var collectionView: UICollectionView!
-    private var presenter: SportsPresenter!
+    private var presenter: SportsPresenterProtocol!
 
     //MARK: - Properties
        var itemsList: Array<Sport> = Array(){
@@ -43,25 +43,22 @@ extension SportsViewController{
         presenter.attachView(view: self)
         presenter.getSports()
         
-            dataSource.getLeagues(sportTitle: "Soccer"){ (res) in
-                print(res.data?.countrys!)
-            }
-            
-            dataSource.getTeams(leagueId: "4328"){ (res) in
-                print(res.data?.teams!)
-            }
-            
-        //id=4328&r=33&s=2020-2021
-        dataSource.getLatestResults(leagueId: "4328"){ (res) in
-                print(res.data?.results)
-            }
-            
-        dataSource.getUpcomingEvents(leagueId: "4328"){ (res) in
-                print(res.data?.events!)
-            }
-        
-        
-        
+//            dataSource.getLeagues(sportTitle: "Soccer"){ (res) in
+//                print(res.data?.countrys!)
+//            }
+//
+//            dataSource.getTeams(leagueId: "4328"){ (res) in
+//                print(res.data?.teams!)
+//            }
+//
+//        //id=4328&r=33&s=2020-2021
+//        dataSource.getLatestResults(leagueId: "4328"){ (res) in
+//                print(res.data?.results)
+//            }
+//
+//        dataSource.getUpcomingEvents(leagueId: "4328"){ (res) in
+//                print(res.data?.events!)
+//            }
     }
 }
 
@@ -113,18 +110,24 @@ extension SportsViewController: UICollectionViewDelegateFlowLayout{
 
 //MARK: - SportsView
 extension SportsViewController: SportsView{
-    func getSportsSuccess(items: [Sport]) {
+    func startLoading() {
+        Loader.shared.start(from: self.view)
+    }
+    
+    func finishLoading() {
+        Loader.shared.stop()
+    }
+    
+    func showNoInternet() {
+        UIHelper.showAlert(at: self, message: "Sorry, no Internet Available")
+    }
+    
+    func setEmptySports() {
+        UIHelper.showAlert(at: self, message: "Sorry, no Internet Available")
+    }
+    
+    func setSports(items: [Sport]) {
         self.itemsList = items
-        collectionView.reloadData()
     }
-    
-    func getSportsFailed(message: String) {
-        UIHelper.shared.showAlert(at: self, message: message)
-    }
-    
-    func noInternet() {
-        UIHelper.shared.showAlert(at: self, message: "No Internet")
-    }
-    
     
 }

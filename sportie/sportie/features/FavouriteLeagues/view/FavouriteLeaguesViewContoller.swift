@@ -15,7 +15,7 @@ class FavouriteLeaguesViewContoller: BaseVC {
     
     
     //MARK: - Properties
-    private var presenter: FavouriteLeaguesPresenter!
+    private var presenter: FavouriteLeaguesPresenterProtocol!
     private var itemsList: Array<League> = Array(){
         didSet{
                 self.tableView.reloadData()
@@ -34,29 +34,15 @@ class FavouriteLeaguesViewContoller: BaseVC {
 //MARK: - Methods
 extension FavouriteLeaguesViewContoller{
     func setupViews(){
-        let dataSource = SportRemoteDataSource()
-        let repo = LeagueRepo(sportDataSource: dataSource, favoriteDataSource: FavoriteLocalDataSource.shared)
+        
+        tableView.register(UINib(nibName: LeagueTableViewCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: LeagueTableViewCell.reuseIdentifier)
+        
+        let sportDataSource = SportRemoteDataSource()
+        let favoriteDataSource = FavoriteLocalDataSource()
+        let repo = LeagueRepo(sportDataSource: sportDataSource, favoriteDataSource: favoriteDataSource)
         presenter = FavouriteLeaguesPresenter(repo: repo)
         presenter.attachView(view: self)
         presenter.getFavouriteLeagues()
-        
-
-        
-//        dataSource.getSports { (res) in
-//            print(res.data!.sports!)
-//        }
-//
-//        dataSource.getSports { (res) in
-//            print(res.data!.sports!)
-//        }
-//
-//        dataSource.getSports { (res) in
-//            print(res.data!.sports!)
-//        }
-//
-//        dataSource.getSports { (res) in
-//            print(res.data!.sports!)
-//        }
     }
 }
 
@@ -88,7 +74,7 @@ extension FavouriteLeaguesViewContoller: UITableViewDataSource, UITableViewDeleg
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         UISwipeActionsConfiguration(actions: [UIContextualAction(style: .destructive, title: "Delete", handler: { (action, view, bool) in
-            
+            self.presenter.deleteFavourite(leagueId: self.itemsList[indexPath.row].idLeague)
         })])
     }
 }
@@ -96,13 +82,21 @@ extension FavouriteLeaguesViewContoller: UITableViewDataSource, UITableViewDeleg
 
 //MARK: - FavouriteLeaguesView
 extension FavouriteLeaguesViewContoller: FavouriteLeaguesView{
-    func showFavouriteLeagues(items: [League]) {
-        self.itemsList = items
+    func favouriteDeleted(leagueId: String) {
+        if let index = self.presenter.getIndex(for: leagueId, in: itemsList){
+            itemsList.remove(at: index)
+        }
     }
     
-    func favouriteLeagueDeleted() {
-        
+    func showError(message: String) {
+        UIHelper.showAlert(at: self, message: message)
     }
     
+    func setFavourites(leagues: [League]) {
+        itemsList = leagues
+    }
     
+    func setEmptyFavourites() {
+        UIHelper.showAlert(at: self, message: "empty data")
+    }
 }

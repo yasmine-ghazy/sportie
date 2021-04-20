@@ -7,13 +7,21 @@
 
 import Foundation
 
-protocol SportsView{
-    func getSportsSuccess(items: [Sport])
-    func getSportsFailed(message: String)
-    func noInternet()
+protocol SportsPresenterProtocol {
+    func getSports()
+    func attachView(view: SportsView)
+    func detachView()
 }
 
-class SportsPresenter{
+protocol SportsView{
+    func startLoading()
+    func finishLoading()
+    func showNoInternet()
+    func setEmptySports()
+    func setSports(items: [Sport])
+}
+
+class SportsPresenter: SportsPresenterProtocol{
     
     var view: SportsView?
     private let repo: SportRepoProtocol?
@@ -26,27 +34,28 @@ class SportsPresenter{
         self.view = view
     }
     
-    func dettachView(){
+    func detachView(){
         self.view = nil
     }
     
     func getSports(){
         if(Reachability.isConnectedToNetwork()){
+            self.view?.startLoading()
             repo?.getSports{ (response) in
+                self.view?.finishLoading()
                 switch(response.status!){
                 case .success:
-                    if let sports = response.data?.sports{
-                        self.view?.getSportsSuccess(items: sports)
+                    if let sports = response.data?.sports, !sports.isEmpty{
+                        self.view?.setSports(items: sports)
+                    }else{
+                        self.view?.setEmptySports()
                     }
                 case .failure:
-                    if let message = response.message{
-                        self.view?.getSportsFailed(message: message)
-                    }
+                        self.view?.setEmptySports()
                 }
             }
-            
         }else{
-            self.view?.noInternet()
+            self.view?.showNoInternet()
         }
     }
 }

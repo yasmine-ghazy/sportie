@@ -10,12 +10,16 @@ import Alamofire
 
 typealias ResponseHandler<T: Codable> = (Response<T>) -> ()
 
-class RequestHandler {
+protocol RequestHandlerProtocol {
+    func get<T: Codable>(url: String, completion: @escaping ResponseHandler<T>)
+}
+
+class RequestHandler:  RequestHandlerProtocol{
     
     static let shared = RequestHandler()
     private init(){}
     
-    func get<T: Codable>(url: String, parameters: [String: String]? = nil, completion: @escaping ResponseHandler<T>){
+    func get<T: Codable>(url: String, completion: @escaping ResponseHandler<T>){
 
         AF.request(url, method: .get).responseDecodable(of:T.self) { response in
             switch response.result {
