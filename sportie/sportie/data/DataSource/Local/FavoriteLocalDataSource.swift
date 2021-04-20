@@ -29,15 +29,23 @@ class FavoriteLocalDataSource: FavoriteDataSource {
     func addFavourite(league: League) -> Bool {
         if let entity = entity{
             let _ = league.toManagedObject(entity: entity, insertInto: CoreDataDatabase.shared.getContext())
-            if CoreDataDatabase.shared.saveContext(){
-                return true
-            }
+            return CoreDataDatabase.shared.saveContext()
+               
+            
         }
         return false
     }
     
     func deleteFavourite(leagueId: String) -> Bool {
-        return true
+        let fetchRequest: NSFetchRequest<FavouriteLeague> = FavouriteLeague.fetchRequest()
+        fetchRequest.predicate = NSPredicate.init(format: "idLeague = %@",leagueId)
+        if let objects = try? CoreDataDatabase.shared.getContext()?.fetch(fetchRequest){
+            for obj in objects {
+                CoreDataDatabase.shared.getContext()?.delete(obj)
+            }
+            return CoreDataDatabase.shared.saveContext()
+        }
+        return false
     }
     
     func getFavouriteLeagues() -> [League] {
@@ -56,7 +64,18 @@ class FavoriteLocalDataSource: FavoriteDataSource {
     }
     
     func deleteAllLeagues() -> Bool {
-        return true
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName)
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try CoreDataDatabase.shared.getContext()?.execute(deleteRequest)
+            return true
+        } catch let error {
+            // TODO: handle the error
+            print("Could not delete. \(error)")
+        }
+    
+        return false
     }
   
 }
