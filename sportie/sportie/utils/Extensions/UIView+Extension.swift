@@ -47,7 +47,7 @@ extension UIView {
         }
         set {
 
-            layer.shadowRadius = shadowRadius
+            layer.shadowRadius = newValue
         }
     }
     @IBInspectable
@@ -90,17 +90,19 @@ extension UIView {
             return layer.cornerRadius
         }
         set {
-            roundTop(radius: newValue)
+            round(radius: newValue, maskedCorners: [.layerMaxXMinYCorner, .layerMinXMinYCorner])
         }
     }
     
-    func roundTop(radius: CGFloat = 5){
-        round(radius: radius, maskedCorners: [.layerMaxXMinYCorner, .layerMinXMinYCorner])
-     }
-
-     func roundBottom(radius:CGFloat = 5){
-        round(radius: radius, maskedCorners: [.layerMaxXMaxYCorner, .layerMinXMaxYCorner])
-     }
+    @IBInspectable
+    var roundBottom: CGFloat {
+        get{
+            return layer.cornerRadius
+        }
+        set {
+            round(radius: newValue, maskedCorners: [.layerMaxXMaxYCorner, .layerMinXMaxYCorner])
+        }
+    }
 
     func round(radius:CGFloat = 5, maskedCorners: CACornerMask){
         self.clipsToBounds = true

@@ -30,7 +30,7 @@ class RequestHandler:  RequestHandlerProtocol{
                         print("\n******************************")
                         print("Request url: \(url)")
                         print("******************************")
-                        print(response.value!)
+                        print("success")
                         print("******************************\n")
                         completion(Response(data: response.value, message: "success", status: .success))
                        default:

@@ -14,16 +14,16 @@ class Navigator {
     private init() {}
     
     //Instance Methods
-    func goToLeagueDetails(with item: Movie, from srcVC: UIViewController) {
-        let dstVc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LeagueDetailsViewController ") as LeagueDetailsViewController
+    func goToLeagueDetails(with item: League, from srcVC: UIViewController) {
+        let dstVc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LeagueDetailsViewController") as LeagueDetailsViewController
         dstVc.item = item
         srcVC.present(dstVc, animated: true, completion: nil)
     }
     
     
-    func goToTeamDetails(with item: Movie, from srcVC: UIViewController) {
-//        let dstVc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "TeamDetailsViewController ") as TeamDetailsViewController
-//        dstVc.item = item
-//        srcVC.present(dstVc, animated: true, completion: nil)
+    func goToTeamDetails(with item: Team, from srcVC: UIViewController) {
+        let dstVc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "TeamDetailsViewController") as TeamDetailsViewController
+        dstVc.item = item
+        srcVC.present(dstVc, animated: true, completion: nil)
     }
 }

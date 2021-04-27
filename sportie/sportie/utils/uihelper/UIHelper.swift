@@ -18,5 +18,13 @@ class UIHelper {
         })
         vc.present(alert, animated: true, completion: nil)
     }
+    
+    class func openURL(url: String){
+        if let url = URL(string: "http://\(url)"){
+            if UIApplication.shared.canOpenURL(url){
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
  
 }

@@ -17,7 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         UITabBar.appearance().barTintColor = UIColor(named: "AccentColor")
-        
+        UserDefaults.standard.set(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
+
         return true
     }
 

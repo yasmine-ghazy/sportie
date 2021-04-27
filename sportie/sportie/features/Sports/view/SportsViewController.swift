@@ -42,23 +42,6 @@ extension SportsViewController{
         presenter = SportsPresenter(repo: repo)
         presenter.attachView(view: self)
         presenter.getSports()
-        
-//            dataSource.getLeagues(sportTitle: "Soccer"){ (res) in
-//                print(res.data?.countrys!)
-//            }
-//
-//            dataSource.getTeams(leagueId: "4328"){ (res) in
-//                print(res.data?.teams!)
-//            }
-//
-//        //id=4328&r=33&s=2020-2021
-//        dataSource.getLatestResults(leagueId: "4328"){ (res) in
-//                print(res.data?.results)
-//            }
-//
-//        dataSource.getUpcomingEvents(leagueId: "4328"){ (res) in
-//                print(res.data?.events!)
-//            }
     }
 }
 
@@ -80,6 +63,7 @@ extension SportsViewController: UICollectionViewDelegate, UICollectionViewDataSo
         cell.configureData(item: itemsList[indexPath.row])
         return cell
     }
+    
 
      func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         return true
@@ -95,7 +79,7 @@ extension SportsViewController: UICollectionViewDelegateFlowLayout{
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = UIScreen.main.bounds.width / 2
-        return CGSize(width: width, height: width)
+        return CGSize(width: width, height: width * 1.5)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {

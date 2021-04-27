@@ -60,16 +60,25 @@ extension FavouriteLeaguesViewContoller: UITableViewDataSource, UITableViewDeleg
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: LeagueTableViewCell.reuseIdentifier, for: indexPath) as! LeagueTableViewCell
-        cell.configureData(item: itemsList[indexPath.row])
+        
+        let item = itemsList[indexPath.row]
+        cell.configureData(item: item)
+        cell.youtubeAction = {
+            UIHelper.openURL(url: item.strYoutube!)
+        }
         return cell
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        (cell as! LeagueTableViewCell).configureData(item: itemsList[indexPath.row])
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //Navigator.shared.goToMovieDetails(with: itemsList[indexPath.row], from: self)
+        Navigator.shared.goToLeagueDetails(with: itemsList[indexPath.row], from: self)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UIScreen.main.bounds.height / 5
+        return UIScreen.main.bounds.height / 7
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {

@@ -19,7 +19,7 @@ class SportRemoteDataSource: SportDataSource {
     }
     
     func getLeagues(sportTitle: String,completion: @escaping ResponseHandler<Leagues>) {
-        let url = baseUrl + "search_all_leagues.php?s=Soccer"
+        let url = baseUrl + "search_all_leagues.php?s=\(sportTitle)"
         RequestHandler.shared.get(url: url, completion: completion)
     }
     
@@ -28,13 +28,13 @@ class SportRemoteDataSource: SportDataSource {
         RequestHandler.shared.get(url: url, completion: completion)
     }
     
-    func getLatestResults(leagueId: String, completion: @escaping ResponseHandler<Results>){
-        let url = baseUrl + "eventslast.php?id=\(leagueId)"
+    func getLatestResults(leagueId: String, completion: @escaping ResponseHandler<Events>){
+        let url = baseUrl + "eventspastleague.php?id=\(leagueId)"
         RequestHandler.shared.get(url: url, completion: completion)
     }
     
     func getUpcomingEvents(leagueId: String, completion: @escaping ResponseHandler<Events>){
-        let url = baseUrl + "eventsround.php?id=\(leagueId)&r=33&s=2020-2021"
+        let url = baseUrl + "eventsround.php?id=\(leagueId)&r=34&s=2020-2021"
         RequestHandler.shared.get(url: url, completion: completion)
     }
 
