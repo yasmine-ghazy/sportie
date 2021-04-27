@@ -26,4 +26,11 @@ class Navigator {
 //        dstVc.item = item
 //        srcVC.present(dstVc, animated: true, completion: nil)
     }
+    
+    func gotoLeagues(sportId:String,from srcVC: UIViewController){
+        let dstVc = UIStoryboard(name:"Main",bundle: nil).instantiateViewController(identifier: "LeaguesTableViewController") as LeaguesTableViewController
+            dstVc.sportId = sportId
+                srcVC.present(dstVc, animated: true, completion: nil)
+        
+    }
 }

@@ -86,7 +86,7 @@ extension SportsViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
      func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //Navigator.shared.goToMovieDetails(with: itemsList[indexPath.row], from: self)
+        Navigator.shared.gotoLeagues(sportId: itemsList[indexPath.row].strSport,from: self)
     }
 }
   

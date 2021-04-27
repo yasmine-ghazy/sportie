@@ -130,7 +130,7 @@
                     </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="blackTranslucent" translucent="NO" largeTitles="YES" id="0LU-rv-zrh">
-                        <rect key="frame" x="0.0" y="44" width="414" height="104.5"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="AccentColor"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -167,7 +167,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="EOe-ww-foe">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="664.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="673"/>
                                 <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                                 <color key="separatorColor" systemColor="groupTableViewBackgroundColor"/>
                                 <connections>
@@ -495,7 +495,7 @@
         <!--Favourite Leagues-->
         <scene sceneID="nE2-WF-k1z">
             <objects>
-                <viewController id="mmg-j5-KBt" customClass="LeaguesViewContoller" customModule="sportie" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="mmg-j5-KBt" customClass="LeaguesTableViewController" customModule="sportie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QRC-3M-BNB">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -527,6 +527,34 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8lj-la-7ad" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2984" y="2296"/>
+        </scene>
+        <!--Leagues Table View Controller-->
+        <scene sceneID="2n8-Is-j9N">
+            <objects>
+                <tableViewController storyboardIdentifier="LeaguesTableViewController" id="ICr-7f-ejf" customClass="LeaguesTableViewController" customModule="sportie" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="BR7-3U-L4p">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="okK-MA-n9Z">
+                                <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="okK-MA-n9Z" id="STd-cW-EdT">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="ICr-7f-ejf" id="j5a-0q-zPM"/>
+                            <outlet property="delegate" destination="ICr-7f-ejf" id="Yyz-Cv-4bs"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9y9-gA-dTv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3905" y="2305"/>
         </scene>
     </scenes>
     <resources>
