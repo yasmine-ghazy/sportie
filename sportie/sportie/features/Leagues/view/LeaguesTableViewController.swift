@@ -9,7 +9,7 @@ import UIKit
 
 class LeaguesTableViewController: UITableViewController {
 
-    public var sportId:String!
+    public var sportTitle:String!
     private var presenter:LeaguesPresenterProtocol!
     private var leagueList: Array<League> = Array(){
         didSet{
@@ -20,14 +20,14 @@ class LeaguesTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setViews()
+        setupViews()
     }
 }
 
 //MARK: - Methods
 extension LeaguesTableViewController{
     
-    func setViews(){
+    func setupViews(){
         tableView.register(UINib(nibName: LeagueTableViewCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: LeagueTableViewCell.reuseIdentifier)
         
         let leagueDatasource = SportRemoteDataSource()
@@ -36,8 +36,9 @@ extension LeaguesTableViewController{
         
         presenter = LeaguesPresenter(leagueRepo: leagueRepo)
         presenter.attachView(view: self)
-        presenter.getAllLeagues(sportTitle:sportId)
-        presenter.getFavoriteLeagues()
+        presenter.getAllLeagues(sportTitle:sportTitle)
+        
+        self.title = sportTitle
     }
 }
     // MARK: - Table view data source
@@ -52,16 +53,33 @@ extension LeaguesTableViewController{
             return leagueList.count
     }
         override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            
+            
             let cell = tableView.dequeueReusableCell(withIdentifier: LeagueTableViewCell.reuseIdentifier, for: indexPath) as! LeagueTableViewCell
-            cell.configureData(item: leagueList[indexPath.row])
+            
+            let item = leagueList[indexPath.row]
+            cell.configureData(item: item)
+            cell.youtubeAction = {
+                UIHelper.openURL(url: item.strYoutube!)
+            }
+            
+            cell.favAction = { [weak self] in
+                self?.leagueList[indexPath.row].isFav = !item.isFav
+                if item.isFav{
+                    self?.presenter.removeFavourite(idLeague: item.idLeague)
+                }else{
+                    self?.presenter.makeFavorite(league: item)
+                }
+            }
+            
             return cell
         }
         override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            //Navigator.shared.goToMovieDetails(with: itemsList[indexPath.row], from: self)
+            Navigator.shared.goToLeagueDetails(with: leagueList[indexPath.row], from: self)
         }
         
         override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return UIScreen.main.bounds.height / 5
+            return UIScreen.main.bounds.height / 7
         }
         
         override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -77,11 +95,11 @@ extension LeaguesTableViewController:LeaguesView{
     }
     
 func startLoading() {
-    
+    Loader.shared.start(from: self.view)
 }
 
 func finishLoading() {
-    
+    Loader.shared.stop()
 }
 
 func showNoInternet() {

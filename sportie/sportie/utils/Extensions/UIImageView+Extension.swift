@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 
 extension UIImageView{
-    func setImage(urlString: String){
+    func setImage(urlString: String, completion: @escaping (()->())){
         let url = URL(string: urlString)
             let processor = DownsamplingImageProcessor(size: self.bounds.size)
             self.kf.indicatorType = .activity
@@ -21,7 +21,9 @@ extension UIImageView{
                     .scaleFactor(UIScreen.main.scale),
                     .transition(.fade(1)),
                     .cacheOriginalImage
-                ])
+                ]) { (_, _, _, _) in
+                completion()
+            }
     }
     
 }

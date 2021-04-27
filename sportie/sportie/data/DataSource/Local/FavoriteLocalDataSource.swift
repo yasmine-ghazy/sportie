@@ -21,6 +21,17 @@ class FavoriteLocalDataSource: FavoriteDataSource {
             entity =  NSEntityDescription.entity(forEntityName: entityName,
                                                  in: managedContext)
         }
+        
+//        let _ = deleteAllLeagues()
+//        
+//        let _ = addFavourite(league: League(idLeague: "4617", strLeague: "Albanian Superliga", strBadge: "https://www.thesportsdb.com/images/media/league/badge/6my1u31578828133.png", strYoutube: "", isFav: true))
+//
+//        let _ = addFavourite(league: League(idLeague: "4907", strLeague: "Albanian Kategoria e Parë", strBadge: "https://www.thesportsdb.com/images/media/league/badge/u09z9l1614341476.png", strYoutube: "www.youtube.com/channel/UC3Guly6AbOr3PqrZMaV6vog", isFav: true))
+//
+//         let _ = addFavourite(league: League(idLeague: "4328", strLeague: "Algerian Ligue 1", strBadge: "https://www.thesportsdb.com/images/media/league/badge/52ba941582570970.png", strYoutube: "", isFav: true))
+
+        
+        
     }
     
     //MARK: - MovieDataSource
@@ -52,7 +63,9 @@ class FavoriteLocalDataSource: FavoriteDataSource {
         do{
             if let leagues =  try CoreDataDatabase.shared.getContext()?.fetch(leagueFetch){
                 return leagues.map(){ (managedObject) -> League in
-                    League(fromManagedObject: managedObject)
+                    var l = League(fromManagedObject: managedObject)
+                    l.isFav = true
+                    return l
                 }
             }
         }catch(let error){

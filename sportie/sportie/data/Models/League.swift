@@ -8,19 +8,6 @@
 import Foundation
 import CoreData
 
-protocol Manageable {
-    /**
-     * Instantiate the instance using the passed NSManagedObject values to set the properties values
-     */
-    init(fromManagedObject managedObject: NSManagedObject)
-
-    /**
-     * Returns all the available property values in the form of NSManaged object where the key is the approperiate json key and the value is the value of the corresponding property
-     */
-    func toManagedObject(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) -> NSManagedObject
-
-
-}
 
 struct Leagues: Codable{
     var countrys : [League]!
@@ -31,13 +18,14 @@ struct League: Codable, Manageable{
     var strLeague : String!
     var strBadge : String!
     var strYoutube : String!
-    var isFav: Bool!
+    var isFav: Bool! = false
 
     init(idLeague : String, strLeague : String, strBadge : String, strYoutube : String, isFav: Bool){
         self.idLeague = idLeague
         self.strLeague = strLeague
         self.strBadge = strBadge
         self.strYoutube = strYoutube
+        self.isFav = false
     }
     
     init(fromManagedObject managedObject: NSManagedObject) {

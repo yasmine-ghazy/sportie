@@ -14,7 +14,7 @@ class Loader{
     static let shared = Loader()
     private init(){
         activityIndicator = UIActivityIndicatorView(style: .large)
-        activityIndicator.color = #colorLiteral(red: 0.8170323968, green: 0.1220784113, blue: 0, alpha: 1)
+        activityIndicator.color = UIColor(named: "PrimaryColor")
         // In most cases this will be set to true, so the indicator hides when it stops spinning
         activityIndicator.hidesWhenStopped = true
     }
@@ -25,7 +25,7 @@ class Loader{
     //MARK: - Methods
     func start(from view: UIView){
         // Place the activity indicator on the center of your current screen
-        activityIndicator.center = view.center.applying(CGAffineTransform(translationX: 0, y: -50))
+        activityIndicator.center = view.center.applying(CGAffineTransform(translationX: 0, y: 0))
         view.addSubview(activityIndicator)
         // Start the activity indicator and place it onto your view
         activityIndicator.startAnimating()

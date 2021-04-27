@@ -18,5 +18,25 @@ class UIHelper {
         })
         vc.present(alert, animated: true, completion: nil)
     }
+    
+    class func openURL(url: String){
+        if let url = URL(string: "http://\(url)"){
+            if UIApplication.shared.canOpenURL(url){
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
+    
+    class func formatedDate(isoDate: String, format: String)-> String{
+        let inputDateFormatter = ISO8601DateFormatter()
+        
+        if let date = inputDateFormatter.date(from:isoDate){
+            let outputDateFormatter = DateFormatter()
+            outputDateFormatter.dateFormat = format
+            return outputDateFormatter.string(from: date)
+        }
+        
+        return ""
+    }
  
 }

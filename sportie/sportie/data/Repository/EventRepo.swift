@@ -9,8 +9,8 @@ import Foundation
 
 protocol EventRepoProtocol{
     func getTeams(leagueId: String, completion: @escaping ResponseHandler<Teams>)
-    func getLatestResults(leagueId: String, completion: @escaping ResponseHandler<Results>)
-    func getUpcomingEvents(leagueId: String, completion: @escaping ResponseHandler<Events>)
+    func getLatestResults(leagueId: String, completion: @escaping ResponseHandler<Events>)
+    func getUpcomingEvents(leagueId: String, roundNumber: String, season: String, completion: @escaping ResponseHandler<Events>)
 }
 
 class EventRepo: EventRepoProtocol {
@@ -25,12 +25,12 @@ class EventRepo: EventRepoProtocol {
         sportDataSource.getTeams(leagueId: leagueId, completion: completion)
     }
     
-    func getLatestResults(leagueId teamId: String, completion: @escaping ResponseHandler<Results>){
+    func getLatestResults(leagueId teamId: String, completion: @escaping ResponseHandler<Events>){
         sportDataSource.getLatestResults(leagueId: teamId, completion: completion)
     }
     
-    func getUpcomingEvents(leagueId teamId: String, completion: @escaping ResponseHandler<Events>){
-        sportDataSource.getUpcomingEvents(leagueId: teamId, completion: completion)
+    func getUpcomingEvents(leagueId: String, roundNumber: String, season: String, completion: @escaping ResponseHandler<Events>) {
+        sportDataSource.getUpcomingEvents(leagueId: leagueId, roundNumber: roundNumber, season: season , completion: completion)
     }
     
 }

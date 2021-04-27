@@ -41,6 +41,8 @@ struct Event: Codable{
     
     //thumb
     var strThumb : String!
+    var intRound: String!
+    var strSeason: String!
 }
 
 /*Last 5 Events by Team Id

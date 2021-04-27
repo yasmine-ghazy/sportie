@@ -16,9 +16,8 @@ protocol SportDataSource {
     
     func getTeams(leagueId: String, completion: @escaping ((Response<Teams>) -> ()))
         
-    func getLatestResults(leagueId: String, completion: @escaping ((Response<Results>) -> ()))
+    func getLatestResults(leagueId: String, completion: @escaping ((Response<Events>) -> ()))
     
-    func getUpcomingEvents(leagueId: String, completion: @escaping ((Response<Events>) -> ()))
-    
+    func getUpcomingEvents(leagueId: String, roundNumber: String, season: String, completion: @escaping ((Response<Events>) -> ()))
 }
 

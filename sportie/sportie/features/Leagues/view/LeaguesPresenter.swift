@@ -24,21 +24,13 @@ protocol LeaguesPresenterProtocol {
     func dettachView()
     func removeFavourite(idLeague: String)
     func getAllLeagues(sportTitle:String)
-    func getFavoriteLeagues()
+//    func getFavoriteLeagues()
     func makeFavorite(league:League)
     
 }
 
 class LeaguesPresenter:LeaguesPresenterProtocol{
-    
-    
-    
-    func getFavoriteLeagues() {
-        if let favoriteLeague = leagueRepo?.getFavouriteLeagues(),!favoriteLeague.isEmpty{
-            self.view?.setFavourites(leagues: favoriteLeague)
-        }
-    }
-    
+
     func makeFavorite(league:League) {
         leagueRepo?.addFavourite(league: league)
     }
@@ -68,14 +60,23 @@ class LeaguesPresenter:LeaguesPresenterProtocol{
     }
     
     func getAllLeagues(sportTitle:String) {
+        
+        guard let favoriteLeagues = leagueRepo?.getFavouriteLeagues() else{return}
+        let favIds = favoriteLeagues.map { $0.idLeague}
+        
         if Reachability.isConnectedToNetwork(){
             self.view?.startLoading()
-            leagueRepo?.getLeagues(sportTitle: "Soccer", completion: { (response) in
+            leagueRepo?.getLeagues(sportTitle: sportTitle, completion: { (response) in
+                self.view?.finishLoading()
                 switch (response.status!){
                 case .success:
                     if let leagueItems = response.data?.countrys,
                        !leagueItems.isEmpty{
-                        self.view?.setLeagues(leagues: leagueItems)
+                        var items = Array(leagueItems)
+                        for i in 0..<items.count{
+                            items[i].isFav =  favIds.contains(items[i].idLeague)
+                        }
+                        self.view?.setLeagues(leagues: items)
                     }else{
                         self.view?.setEmptyLeagues()
                     }
@@ -87,7 +88,7 @@ class LeaguesPresenter:LeaguesPresenterProtocol{
         }else{
             self.view?.showNoInternet()
         }
-        }
+    }
     
     
     
