@@ -11,30 +11,29 @@ protocol LeaguesView {
     func startLoading()
     func finishLoading()
     func showNoInternet()
-    func makeFavorite(league:League)
-    func removeFavorite(idLeague:String)
+    
     func setLeagues(leagues:[League])
-    func showError(message: String)
-    func setFavourites(leagues: [League])
     func setEmptyLeagues()
+    
+    func makeFavorite(league:League)
+    
+    func openYoutube(url: String)
+   
+    func goToLeagueDetails(league: League)
+    func showError(message: String)
+ 
 }
 
 protocol LeaguesPresenterProtocol {
     func attachView(view: LeaguesView)
     func dettachView()
-    func removeFavourite(idLeague: String)
     func getAllLeagues(sportTitle:String)
-//    func getFavoriteLeagues()
-    func makeFavorite(league:League)
-    
+    func leagueSelected(league: League)
+    func favSelected(league: League)
+    func youtubeSelected(url: String)
 }
 
 class LeaguesPresenter:LeaguesPresenterProtocol{
-
-    func makeFavorite(league:League) {
-        leagueRepo?.addFavourite(league: league)
-    }
-    
     
     private var view:LeaguesView?
     private var leagueRepo:LeagueRepoProtocol?
@@ -50,14 +49,7 @@ class LeaguesPresenter:LeaguesPresenterProtocol{
     func dettachView() {
         self.view = nil
     }
-    
-    func removeFavourite(idLeague: String) {
-        if let result = leagueRepo?.deleteFavourite(leagueId: idLeague),result{
-            self.view?.removeFavorite(idLeague: idLeague)
-        }else{
-            self.view?.showError(message: "Sorry, Favourite cannot be deleted.")
-        }
-    }
+
     
     func getAllLeagues(sportTitle:String) {
         
@@ -87,13 +79,39 @@ class LeaguesPresenter:LeaguesPresenterProtocol{
             })
         }else{
             self.view?.showNoInternet()
+            self.view?.setEmptyLeagues()
         }
     }
     
     
+    func leagueSelected(league: League) {
+        if(Reachability.isConnectedToNetwork()){
+            self.view?.goToLeagueDetails(league: league)
+        }else{
+            self.view?.showNoInternet()
+        }
+    }
     
-        
     
+    func youtubeSelected(url: String) {
+        self.view?.openYoutube(url: url)
+    }
     
-    
+    func favSelected(league: League) {
+        if league.isFav{
+            if let result = leagueRepo?.deleteFavourite(leagueId: league.idLeague),result{
+                self.view?.makeFavorite(league: league)
+            }else{
+                self.view?.showError(message: "Sorry, Favourite cannot be deleted.")
+            }
+            
+        }else{
+            if let result = leagueRepo?.addFavourite(league: league),result{
+                self.view?.makeFavorite(league: league)
+            }else{
+                self.view?.showError(message: "Sorry, Favourite cannot be added.")
+            }
+        }
+    }
+
 }

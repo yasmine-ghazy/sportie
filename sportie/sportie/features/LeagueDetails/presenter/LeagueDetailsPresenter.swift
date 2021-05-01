@@ -9,6 +9,8 @@ import Foundation
 
 protocol LeagueDetailsPresenterProtocol {
     func getData(leagueId: String)
+    func favSelected(league: League)
+
     func attachView(view: LeagueDetailsView)
     func detachView()
 }
@@ -17,10 +19,14 @@ protocol LeagueDetailsView{
     func startLoading()
     func finishLoading()
     func showNoInternet()
+    func showError(message: String)
     
+    func makeFavorite(league:League)
+
     func setEmptyTeams()
     func setEmptyUpcomingEvents()
     func setEmptyLatestResults()
+    
     
     func setTeams(items: [Team])
     func setUpcomintEvents(items: [Event])
@@ -29,14 +35,15 @@ protocol LeagueDetailsView{
 
 class LeagueDetailsPresenter: LeagueDetailsPresenterProtocol{
 
-
     var view: LeagueDetailsView?
     private let eventRepo: EventRepoProtocol?
     private let teamRepo: TeamRepoProtocol?
+    private let leagueRepo: LeagueRepoProtocol?
     
-    init(eventRepo: EventRepoProtocol, teamRepo: TeamRepoProtocol){
+    init(eventRepo: EventRepoProtocol, teamRepo: TeamRepoProtocol, leagueRepo: LeagueRepoProtocol){
         self.eventRepo = eventRepo
         self.teamRepo = teamRepo
+        self.leagueRepo = leagueRepo
     }
     
     func attachView(view: LeagueDetailsView){
@@ -50,11 +57,9 @@ class LeagueDetailsPresenter: LeagueDetailsPresenterProtocol{
     func getData(leagueId: String) {
         getTeams(leagueId: leagueId)
         getLatestResults(leagueId: leagueId)
+        
     }
-    
 
-    
-    
     func getTeams(leagueId: String){
         if(Reachability.isConnectedToNetwork()){
             self.view?.startLoading()
@@ -106,8 +111,7 @@ class LeagueDetailsPresenter: LeagueDetailsPresenterProtocol{
                 case .success:
                     if let events = response.data?.events, !events.isEmpty{
                         self.view?.setLatestResults(items: events)
-                        self.getUpcomingEvents(leagueId: leagueId, roundNumber: "\(Int(events.last!.intRound)! + 1)", season: events.last!.strSeason)
-                        
+                        self.getUpcomingEvents(leagueId: leagueId, roundNumber: "\(Int(events.last!.intRound ?? "1") ?? 1 + 1)", season: events.last!.strSeason)
 
                     }else{
                         self.view?.setEmptyLatestResults()
@@ -121,5 +125,21 @@ class LeagueDetailsPresenter: LeagueDetailsPresenterProtocol{
         }
     }
 
+    func favSelected(league: League){
+        if league.isFav{
+            if let result = leagueRepo?.deleteFavourite(leagueId: league.idLeague),result{
+                self.view?.makeFavorite(league: league)
+            }else{
+                self.view?.showError(message: "Sorry, Favourite cannot be deleted.")
+            }
+            
+        }else{
+            if let result = leagueRepo?.addFavourite(league: league),result{
+                self.view?.makeFavorite(league: league)
+            }else{
+                self.view?.showError(message: "Sorry, Favourite cannot be added.")
+            }
+        }
+    }
     
 }

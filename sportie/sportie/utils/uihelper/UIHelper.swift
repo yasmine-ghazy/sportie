@@ -27,7 +27,7 @@ class UIHelper {
         }
     }
     
-    class func formatedDate(isoDate: String, format: String)-> String{
+    class func formatedDate(isoDate: String , format: String)-> String?{
         let inputDateFormatter = ISO8601DateFormatter()
         
         if let date = inputDateFormatter.date(from:isoDate){
@@ -36,7 +36,7 @@ class UIHelper {
             return outputDateFormatter.string(from: date)
         }
         
-        return ""
+        return nil
     }
  
 }

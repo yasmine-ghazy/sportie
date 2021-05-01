@@ -20,8 +20,14 @@ class UpcomingEventCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Methods
     func configureData(item: Event){
-        eventNameLabel.text = item.strHomeTeam + "\nvs\n" + item.strAwayTeam
-        eventDateLabel.text = UIHelper.formatedDate(isoDate: item.strTimestamp, format: "dd\nMMM")
-        eventTimeLabel.text = UIHelper.formatedDate(isoDate: item.strTimestamp, format: "mm:ss\na")
+        eventNameLabel.text = item.strEvent
+        if let strTimestamp = item.strTimestamp{
+            eventDateLabel.text = UIHelper.formatedDate(isoDate: strTimestamp, format: "dd\nMMM") ?? item.strTime
+            eventTimeLabel.text = UIHelper.formatedDate(isoDate: strTimestamp, format: "mm:ss\na") ?? item.dateEvent
+        }else{
+            eventDateLabel.text = item.strTime
+            eventTimeLabel.text = item.dateEvent
+        }
+        
     }
 }

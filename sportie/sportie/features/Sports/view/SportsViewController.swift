@@ -18,9 +18,9 @@ class SportsViewController: BaseVC {
     //MARK: - Properties
        var itemsList: Array<Sport> = Array(){
            didSet{
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
            }
        }
     
@@ -28,6 +28,12 @@ class SportsViewController: BaseVC {
        override func viewDidLoad() {
            super.viewDidLoad()
            setupViews()
+        
+        let yourBackImage = UIImage(systemName: "arrowshape.turn.up.backward.fill")
+        self.navigationController?.navigationBar.backIndicatorImage = yourBackImage
+        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = yourBackImage
+        self.navigationController?.navigationBar.backItem?.title = " "
+        self.navigationController?.navigationBar.tintColor = .white
        }
     
     //MARK: - IBActions
@@ -70,7 +76,7 @@ extension SportsViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
      func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        Navigator.shared.gotoLeagues(sportId: itemsList[indexPath.row].strSport,from: self)
+        presenter.sportSelected(sport:  itemsList[indexPath.row])
     }
 }
   
@@ -103,15 +109,22 @@ extension SportsViewController: SportsView{
     }
     
     func showNoInternet() {
-        UIHelper.showAlert(at: self, message: "Sorry, no Internet Available")
+        UIHelper.showAlert(at: self, message: "Sorry, No Internet Connection")
     }
     
     func setEmptySports() {
-        UIHelper.showAlert(at: self, message: "Sorry, no Internet Available")
+        self.itemsList = []
+        let view = CustomView.create(image: UIImage(systemName: "sportscourt.fill")!, title: "No Sports to show")
+        collectionView.backgroundView = view
     }
     
     func setSports(items: [Sport]) {
         self.itemsList = items
+        collectionView.backgroundView = UIView()
+    }
+    
+    func navigateToLeagues(sport: String) {
+        Navigator.shared.gotoLeagues(sportId: sport,from: self)
     }
     
 }

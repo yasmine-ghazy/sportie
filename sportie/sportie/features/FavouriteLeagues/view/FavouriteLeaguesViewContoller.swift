@@ -68,8 +68,8 @@ extension FavouriteLeaguesViewContoller: UITableViewDataSource, UITableViewDeleg
         
         let item = itemsList[indexPath.row]
         cell.configureData(item: item)
-        cell.youtubeAction = {
-            UIHelper.openURL(url: item.strYoutube!)
+        cell.youtubeAction = { [weak self] in
+            self?.presenter.youtubeSelected(url: (self?.itemsList[indexPath.row].strYoutube)!)
         }
         
         cell.favAction = { [weak self] in
@@ -83,26 +83,23 @@ extension FavouriteLeaguesViewContoller: UITableViewDataSource, UITableViewDeleg
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        Navigator.shared.goToLeagueDetails(with: itemsList[indexPath.row], from: self)
+        presenter.leagueSelected(league: itemsList[indexPath.row])
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UIScreen.main.bounds.height / 7
     }
     
-//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        UISwipeActionsConfiguration(actions: [UIContextualAction(style: .destructive, title: "Delete", handler: { (action, view, bool) in
-//            self.presenter.deleteFavourite(leagueId: self.itemsList[indexPath.row].idLeague)
-//        })])
-//    }
 }
 
 
 //MARK: - FavouriteLeaguesView
 extension FavouriteLeaguesViewContoller: FavouriteLeaguesView{
+    
     func favouriteDeleted(leagueId: String) {
-        if let index = self.presenter.getIndex(for: leagueId, in: itemsList){
-            itemsList.remove(at: index)
+        self.itemsList.removeAll(where: { $0.idLeague == leagueId})
+        if itemsList.isEmpty{
+            setEmptyFavourites()
         }
     }
     
@@ -111,10 +108,27 @@ extension FavouriteLeaguesViewContoller: FavouriteLeaguesView{
     }
     
     func setFavourites(leagues: [League]) {
-        itemsList = leagues
+            itemsList = leagues
+            tableView.backgroundView = UIView()
+
     }
     
-    func setEmptyFavourites() {
-        UIHelper.showAlert(at: self, message: "empty data")
+    func setEmptyFavourites(){
+        itemsList = []
+        let view = CustomView.create(image: UIImage(systemName: "heart.fill")!, title: "No Favourite Leagues")
+        tableView.backgroundView = view
+    }
+    
+    func goToLeagueDetails(league: League) {
+        Navigator.shared.goToLeagueDetails(with: league, from: self)
+
+    }
+    
+    func openYoutube(url: String) {
+        UIHelper.openURL(url: url)
+    }
+    
+    func showNoInternet() {
+        UIHelper.showAlert(at: self, message: "Sorry, No Internet Connection")
     }
 }

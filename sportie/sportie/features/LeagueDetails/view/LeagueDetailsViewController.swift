@@ -14,6 +14,7 @@ class LeagueDetailsViewController: BaseVC {
     @IBOutlet var upcomingEventsCollectionView: UICollectionView!
     @IBOutlet var latestResultsCollectionView: UICollectionView!
     @IBOutlet weak var leagueTitleLabel: UILabel!
+    @IBOutlet weak var favButton: FavButton!
 
     
     //MARK: - Properties
@@ -50,9 +51,17 @@ class LeagueDetailsViewController: BaseVC {
         setupViews()
     }
     
+    
+    
     //MARK: - IBActions
     @IBAction func backClicked(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func favClicked(_ sender: Any){
+        if let item = item{
+            self.presenter.favSelected(league: item)
+        }
     }
     
 }
@@ -61,16 +70,30 @@ class LeagueDetailsViewController: BaseVC {
 extension LeagueDetailsViewController{
     func setupViews(){
         
+        upcomingEventsCollectionView.contentInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        teamsCollectionView.contentInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        latestResultsCollectionView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+        leagueTitleLabel.text = item?.strLeague
+        
+        setupPresenter()
+        setupFav()
+        
+    }
+    
+    func setupPresenter(){
         presenter = LeagueDetailsPresenter(
             eventRepo: EventRepo(sportDataSource: SportRemoteDataSource()),
-            teamRepo: TeamRepo(sportDataSource: SportRemoteDataSource())
+            teamRepo: TeamRepo(sportDataSource: SportRemoteDataSource()), leagueRepo: LeagueRepo(sportDataSource: SportRemoteDataSource(), favoriteDataSource: FavoriteLocalDataSource())
         )
-        
         presenter.attachView(view: self)
-        
-        if let leagueId = item?.idLeague{
-            leagueTitleLabel.text = item?.strLeague
+        if let item = item, let leagueId = item.idLeague{
             presenter.getData(leagueId: leagueId)
+        }
+    }
+    
+    func setupFav(){
+        if let item = item{
+            favButton.setFaved(item.isFav ?? false)
         }
     }
 }
@@ -120,8 +143,10 @@ extension LeagueDetailsViewController: UICollectionViewDataSource{
 
 extension LeagueDetailsViewController: UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let item = teamsList[indexPath.item]
-        Navigator.shared.goToTeamDetails(with: item, from: self)
+        if collectionView == teamsCollectionView{
+            let item = teamsList[indexPath.item]
+            Navigator.shared.goToTeamDetails(with: item, from: self)
+        }
     }
 }
 
@@ -129,18 +154,21 @@ extension LeagueDetailsViewController: UICollectionViewDelegate{
 extension LeagueDetailsViewController: UICollectionViewDelegateFlowLayout{
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        var size = CGSize()
+        
         switch collectionView {
         case upcomingEventsCollectionView:
-            let height = upcomingEventsCollectionView.frame.size.height - 10
-            return CGSize(width: height * 1, height: height)
+            size.height = upcomingEventsCollectionView.frame.size.height
+            size.width = size.height
         case latestResultsCollectionView:
-            let width = UIScreen.main.bounds.width - 10
-            return CGSize(width: width, height: width * 0.3)
+            size.width = UIScreen.main.bounds.width - 10
+            size.height = size.width * 0.25
         default:
-            let height = teamsCollectionView.frame.size.height - 10
-            return CGSize(width: height, height: height)
+            size.height = teamsCollectionView.frame.size.height
+            size.width = size.height
         }
-        
+        return size
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -148,7 +176,7 @@ extension LeagueDetailsViewController: UICollectionViewDelegateFlowLayout{
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return 10
     }
 }
 
@@ -171,15 +199,15 @@ extension LeagueDetailsViewController: LeagueDetailsView{
     
     //Empty
     func setEmptyUpcomingEvents() {
-        UIHelper.showAlert(at: self, message: "Sorry, no Data Available")
+        UIHelper.showAlert(at: self, message: "Sorry, no Upcoming Events Available")
     }
     
     func setEmptyLatestResults() {
-        UIHelper.showAlert(at: self, message: "Sorry, no Data Available")
+        UIHelper.showAlert(at: self, message: "Sorry, no LatestResults Available")
     }
     
     func setEmptyTeams() {
-        UIHelper.showAlert(at: self, message: "Sorry, no Data Available")
+        UIHelper.showAlert(at: self, message: "Sorry, no Teams Available")
     }
     
     //Set Data
@@ -193,6 +221,15 @@ extension LeagueDetailsViewController: LeagueDetailsView{
     
     func setTeams(items: [Team]) {
         self.teamsList = items
+    }
+    
+    func makeFavorite(league: League){
+        item?.isFav.toggle()
+        favButton.toggle()
+    }
+    
+    func showError(message: String) {
+        UIHelper.showAlert(at: self, message: message)
     }
     
 }

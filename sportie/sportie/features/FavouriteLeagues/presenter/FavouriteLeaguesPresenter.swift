@@ -10,20 +10,29 @@ import Foundation
 protocol FavouriteLeaguesView{
     func setFavourites(leagues: [League])
     func setEmptyFavourites()
+    
     func favouriteDeleted(leagueId: String)
+    
+    func openYoutube(url: String)
+    
+    func goToLeagueDetails(league: League)
+    
     func showError(message: String)
+    
+    func showNoInternet()
 }
 
 protocol FavouriteLeaguesPresenterProtocol {
     func attachView(view: FavouriteLeaguesView)
     func dettachView()
     func getFavouriteLeagues()
+    func leagueSelected(league: League)
     func deleteFavourite(leagueId: String)
-    func getIndex(for leagueId: String, in itemsList: [League])-> Int?
+    func youtubeSelected(url: String)
 }
 
 class FavouriteLeaguesPresenter: FavouriteLeaguesPresenterProtocol{
-    
+
     var view: FavouriteLeaguesView?
     private let repo: LeagueRepoProtocol?
     
@@ -45,6 +54,7 @@ class FavouriteLeaguesPresenter: FavouriteLeaguesPresenterProtocol{
         }else{
             self.view?.setEmptyFavourites()
         }
+
     }
     
     func deleteFavourite(leagueId: String) {
@@ -55,13 +65,18 @@ class FavouriteLeaguesPresenter: FavouriteLeaguesPresenterProtocol{
         }
     }
     
-    func getIndex(for leagueId: String, in itemsList: [League])-> Int?{
-        for i in 0..<itemsList.count{
-            if(itemsList[i].idLeague == leagueId){
-                return i
-            }
+    func leagueSelected(league: League) {
+        if(Reachability.isConnectedToNetwork()){
+            self.view?.goToLeagueDetails(league: league)
+        }else{
+            self.view?.showNoInternet()
         }
-        return nil
     }
+    
+    func youtubeSelected(url: String) {
+        self.view?.openYoutube(url: url)
+    }
+    
+    
     
 }

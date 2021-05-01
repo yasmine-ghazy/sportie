@@ -9,6 +9,7 @@ import Foundation
 
 protocol SportsPresenterProtocol {
     func getSports()
+    func sportSelected(sport: Sport)
     func attachView(view: SportsView)
     func detachView()
 }
@@ -19,10 +20,10 @@ protocol SportsView{
     func showNoInternet()
     func setEmptySports()
     func setSports(items: [Sport])
+    func navigateToLeagues(sport: String)
 }
 
 class SportsPresenter: SportsPresenterProtocol{
-    
     var view: SportsView?
     private let repo: SportRepoProtocol?
     
@@ -56,6 +57,16 @@ class SportsPresenter: SportsPresenterProtocol{
             }
         }else{
             self.view?.showNoInternet()
+            self.view?.setEmptySports()
         }
     }
+    
+    func sportSelected(sport: Sport) {
+        if(Reachability.isConnectedToNetwork()){
+            self.view?.navigateToLeagues(sport: sport.strSport)
+        }else{
+            self.view?.showNoInternet()
+        }
+    }
+
 }

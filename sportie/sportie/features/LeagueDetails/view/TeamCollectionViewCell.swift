@@ -21,9 +21,13 @@ class TeamCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Methods
     func configureData(item: Team){
-        teamIV.kf.setImage(with: URL(string: item.strTeamBadge)) { (_, _, _, _) in
-            self.roundView.layer.cornerRadius = self.roundView.frame.height / 2.0
-            self.roundView.layer.masksToBounds = true
+//        teamIV.kf.setImage(with: URL(string: item.strTeamBadge)) { (_, _, _, _) in
+//            
+//        }
+        
+        teamIV.setImage(urlString: item.strTeamBadge, placeholder: UIImage(systemName: "person.3.fill")!) {
+            self.roundView.layoutSubviews()
         }
+
     }
 }

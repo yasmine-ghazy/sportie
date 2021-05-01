@@ -14,7 +14,6 @@ class TeamDetailsViewController : UITableViewController {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var informedYearLabel: UILabel!
     @IBOutlet weak var descLabel: UILabel!
-    @IBOutlet weak var rateView: UIStackView!
     @IBOutlet weak var roundView: UIView!
     //MARK: - Properties
     var item: Team?
@@ -33,20 +32,14 @@ class TeamDetailsViewController : UITableViewController {
             informedYearLabel.text = "\(item.intFormedYear!)"
             nameLabel.text = item.strTeam
             descLabel.text = item.strDescriptionEN
-            if let strStadiumThumb = item.strStadiumThumb{
-                coverImageView.kf.setImage(with: URL(string: strStadiumThumb))
-            }
+            teamImageView.setImage(urlString: item.strTeamBadge)
+            coverImageView.setImage(urlString: item.strTeamBadge)
         }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if let item = item{
-            teamImageView.kf.setImage(with: URL(string: item.strTeamBadge)) { (_, _, _, _) in
-                self.roundView.layer.cornerRadius = self.roundView.frame.height / 2.0
-                self.roundView.layer.masksToBounds = true
-            }
-        }
+        
     }
 
     // MARK: - Table view data source

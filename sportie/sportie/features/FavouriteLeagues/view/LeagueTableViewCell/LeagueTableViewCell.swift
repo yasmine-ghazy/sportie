@@ -14,7 +14,7 @@ class LeagueTableViewCell: UITableViewCell {
     //MARK: - IBOutlets
     @IBOutlet weak var movieIV: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var favButton: UIButton!
+    @IBOutlet weak var favButton: FavButton!
     @IBOutlet weak var youtubeButton: UIButton!
     @IBOutlet weak var roundView: UIView!
     
@@ -39,22 +39,16 @@ class LeagueTableViewCell: UITableViewCell {
     func configureData(item: League){
         titleLabel?.text = item.strLeague
         
-        favButton?.setImage(UIImage(systemName: "heart"), for: .normal)
-        favButton?.setImage(UIImage(systemName: "heart.fill"), for: .selected)
-        favButton.isSelected = item.isFav ?? false
+        favButton.setFaved(item.isFav ?? false)
         
         if let youtube = item.strYoutube{
             youtubeButton.isHidden = youtube.isEmpty
         }
-        
-//        movieIV.kf.setImage(with: URL(string: item.strBadge)) { (_, _, _, _) in
-//            self.roundView.layer.cornerRadius = self.roundView.frame.height / 2.0
-//            self.roundView.layer.masksToBounds = true
-//        }
-        
-        movieIV.setImage(urlString: item.strBadge){
-            self.roundView.layer.cornerRadius = self.roundView.frame.height / 2.0
-            self.roundView.layer.masksToBounds = true
+        if let badge = item.strBadge{
+            movieIV.setImage(urlString: badge, placeholder:  UIImage(systemName: "photo.on.rectangle.angled")!)
+        }else{
+            movieIV.image = UIImage(systemName: "photo.on.rectangle.angled")!
         }
+        
     }
 }

@@ -16,17 +16,20 @@ class LeaguesTableViewController: UITableViewController {
             tableView.reloadData()
         }
     }
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        //setupViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setupViews()
     }
 }
 
 //MARK: - Methods
 extension LeaguesTableViewController{
-    
     func setupViews(){
         tableView.register(UINib(nibName: LeagueTableViewCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: LeagueTableViewCell.reuseIdentifier)
         
@@ -54,79 +57,68 @@ extension LeaguesTableViewController{
     }
         override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             
-            
             let cell = tableView.dequeueReusableCell(withIdentifier: LeagueTableViewCell.reuseIdentifier, for: indexPath) as! LeagueTableViewCell
             
             let item = leagueList[indexPath.row]
             cell.configureData(item: item)
-            cell.youtubeAction = {
-                UIHelper.openURL(url: item.strYoutube!)
+            
+            cell.youtubeAction = { [weak self] in
+                self?.presenter?.youtubeSelected(url: item.strYoutube!)
             }
             
             cell.favAction = { [weak self] in
-                self?.leagueList[indexPath.row].isFav = !item.isFav
-                if item.isFav{
-                    self?.presenter.removeFavourite(idLeague: item.idLeague)
-                }else{
-                    self?.presenter.makeFavorite(league: item)
-                }
+                self?.presenter.favSelected(league: item)
             }
             
             return cell
         }
         override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            Navigator.shared.goToLeagueDetails(with: leagueList[indexPath.row], from: self)
+            presenter.leagueSelected(league: leagueList[indexPath.row])
         }
         
         override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
             return UIScreen.main.bounds.height / 7
         }
-        
-        override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-            UISwipeActionsConfiguration(actions: [UIContextualAction(style: .destructive, title: "Delete", handler: { (action, view, bool) in
-                self.presenter.removeFavourite(idLeague: self.leagueList[indexPath.row].idLeague)
-            })])
-        }
     }
 //MARK: - LeaguesView
 extension LeaguesTableViewController:LeaguesView{
-    func setFavourites(leagues: [League]) {
-        
+
+    func startLoading() {
+        Loader.shared.start(from: self.view)
+    }
+
+    func finishLoading() {
+        Loader.shared.stop()
+    }
+
+    func showNoInternet() {
+        UIHelper.showAlert(at: self, message: "No Internet Connection")
+    }
+
+    func makeFavorite(league: League) {
+        let index = leagueList.firstIndex(where: {$0.idLeague == league.idLeague})!
+        leagueList[index].isFav.toggle()
+    }
+
+    func setLeagues(leagues: [League]) {
+        leagueList = leagues
     }
     
-func startLoading() {
-    Loader.shared.start(from: self.view)
-}
-
-func finishLoading() {
-    Loader.shared.stop()
-}
-
-func showNoInternet() {
+    func showError(message: String) {
+        UIHelper.showAlert(at: self, message: message)
+    }
+    func setEmptyLeagues() {
+        let view = CustomView.create(image: UIImage(systemName: "sportscourt.fill")!, title: "No Sports to show")
+        tableView.backgroundView = view
+    }
     
-}
-
-func makeFavorite(league: League) {
+    func openYoutube(url: String) {
+        UIHelper.openURL(url: url)
+    }
     
-}
-
-func removeFavorite(idLeague: String) {
-    
-}
-
-func setLeagues(leagues: [League]) {
-    leagueList = leagues
-}
-
-func showError(message: String) {
-    UIHelper.showAlert(at: self, message: message)
-}
-
-
-
-func setEmptyLeagues() {
-    UIHelper.showAlert(at: self, message: "empty data")
-}
+    func goToLeagueDetails(league: League) {
+        Navigator.shared.goToLeagueDetails(with: league, from: self)
+    }
 }
         
 

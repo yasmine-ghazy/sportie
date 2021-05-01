@@ -20,7 +20,6 @@ class Navigator {
         srcVC.present(dstVc, animated: true, completion: nil)
     }
     
-    
     func goToTeamDetails(with item: Team, from srcVC: UIViewController) {
         let dstVc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "TeamDetailsViewController") as TeamDetailsViewController
         dstVc.item = item
