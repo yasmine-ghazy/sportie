@@ -14,7 +14,7 @@ class Loader{
     static let shared = Loader()
     private init(){
         activityIndicator = UIActivityIndicatorView(style: .large)
-        activityIndicator.color = UIColor(named: "PrimaryColor")
+        activityIndicator.color = UIColor(named: "AccentColor")
         // In most cases this will be set to true, so the indicator hides when it stops spinning
         activityIndicator.hidesWhenStopped = true
     }

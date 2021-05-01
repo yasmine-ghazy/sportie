@@ -111,7 +111,7 @@ class LeagueDetailsPresenter: LeagueDetailsPresenterProtocol{
                 case .success:
                     if let events = response.data?.events, !events.isEmpty{
                         self.view?.setLatestResults(items: events)
-                        self.getUpcomingEvents(leagueId: leagueId, roundNumber: "\(Int(events.last!.intRound ?? "1") ?? 1 + 1)", season: events.last!.strSeason)
+                        self.getUpcomingEvents(leagueId: leagueId, roundNumber: "\(Int(events.first!.intRound ?? "1")! + 1)", season: events.first!.strSeason)
 
                     }else{
                         self.view?.setEmptyLatestResults()
